@@ -2,7 +2,7 @@ import json
 import threading
 from decimal import Decimal
 
-from brownie import ERC20MOBI, VestingEscrow, accounts, history
+from brownie import ERC20MOBI, VestingEscrow, accounts, history, network
 
 from . import deployment_config as config
 network.gas_limit(8000000)

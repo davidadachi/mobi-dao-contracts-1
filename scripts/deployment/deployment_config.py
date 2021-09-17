@@ -9,7 +9,7 @@ from brownie import rpc, web3, accounts
 from web3 import middleware
 from web3.gas_strategies.time_based import fast_gas_price_strategy as gas_strategy
 
-LP_VESTING_JSON = "/early-users-mobius.json"
+LP_VESTING_JSON = "early-users-mobius.json"
 DEPLOYMENTS_JSON = "deployments.json"
 REQUIRED_CONFIRMATIONS = 3
 
