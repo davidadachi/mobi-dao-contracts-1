@@ -51,7 +51,7 @@ def live_part_two():
 
 
 def development():
-    accounts.load("kyle_personal")
+    accounts.load("dev-1")
     token, voting_escrow = deploy_part_one(accounts[0])
     deploy_part_two(accounts[0], token, voting_escrow)
 
@@ -97,10 +97,15 @@ def deploy_part_two(admin, token, voting_escrow, confs=1, deployments_json=None)
         "LiquidityGaugeReward": {},
         "PoolProxy": pool_proxy.address,
     }
+    gauges = []
     for name, (lp_token, weight) in POOL_TOKENS.items():
         gauge = LiquidityGaugeV3.deploy(lp_token, minter, admin, {"from": admin, "required_confs": confs})
         gauge_controller.add_gauge(gauge, 0, weight, {"from": admin, "required_confs": confs})
         deployments["LiquidityGaugeV3"][name] = gauge.address
+        gauges.append(gauge.address)
+    
+    for gaugeAddress in gauges:
+        gauge_controller.change_gauge_weight(gaugeAddress, 10 ** 17, {"from": admin, "required_confs": confs})
 
     for (name, (lp_token, reward_claim, reward_token, weight)) in REWARD_POOL_TOKENS.items():
         gauge = LiquidityGaugeReward.deploy(
@@ -108,6 +113,7 @@ def deploy_part_two(admin, token, voting_escrow, confs=1, deployments_json=None)
         )
         gauge_controller.add_gauge(gauge, 0, weight, {"from": admin, "required_confs": confs})
         deployments["LiquidityGaugeReward"][name] = gauge.address
+    gauge_controller.initiate_for_farming({"from": admin, "required_confs": confs})
 
     print(f"Deployment complete! Total gas used: {sum(i.gas_used for i in history)}")
     if deployments_json is not None:

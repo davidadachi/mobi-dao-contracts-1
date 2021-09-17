@@ -597,8 +597,8 @@ def get_weights_sum_per_type(type_id: int128) -> uint256:
     return self.points_sum[type_id][self.time_sum[type_id]].bias
 
 @external
-def initiateForFarming():
-    assert not self.initiated # dev: can only be ran once
+def initiate_for_farming():
+    assert self.initiated == False, "already initiated" # dev: can only be ran once
     self.initiated = True
     next_time: uint256 = (block.timestamp + WEEK) / WEEK * WEEK
     cur_time: uint256 = (block.timestamp) / WEEK * WEEK
@@ -606,9 +606,6 @@ def initiateForFarming():
     self.points_total[cur_time] = self.points_total[next_time]
     self.points_type_weight[0][cur_time] = self.points_type_weight[0][next_time]
     self.points_sum[0][cur_time].bias = self.points_sum[0][next_time].bias
-
-    for gauge in self.gauges:
+    for i in range(10):
+        gauge:address = self.gauges[i]
         self.points_weight[gauge][cur_time].bias = self.points_weight[gauge][next_time].bias
-    for gauge in self.gauges:
-        self._get_weight(gauge)
-    self._get_total()
