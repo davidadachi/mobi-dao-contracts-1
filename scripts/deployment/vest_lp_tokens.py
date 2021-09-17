@@ -5,9 +5,10 @@ from decimal import Decimal
 from brownie import ERC20MOBI, VestingEscrow, accounts, history
 
 from . import deployment_config as config
+network.gas_limit(8000000)
 
-TOTAL_AMOUNT = 151515151515151515151515151
-VESTING_PERIOD = 86400 * 365
+TOTAL_AMOUNT = 5_000_000 * 10 ** 18
+VESTING_PERIOD = 86400 * 7
 
 # burn addresses / known scammers
 BLACKLIST = [
@@ -82,7 +83,7 @@ def vest_tokens(admin, funding_admins, token_address, confs):
     token = ERC20MOBI.at(token_address)
 
     # deploy vesting contract
-    start_time = token.future_epoch_time_write.call()
+    start_time = 1631883600 # token.future_epoch_time_write.call()
 
     vesting_escrow = VestingEscrow.deploy(
         token,
