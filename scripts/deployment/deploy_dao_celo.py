@@ -111,7 +111,7 @@ def deploy_part_two(admin, token, voting_escrow, confs=1, deployments_json=None)
         )
         gauge_controller.add_gauge(gauge, 0, weight, {"from": admin, "required_confs": confs})
         deployments["LiquidityGaugeReward"][name] = gauge.address
-    gauge_controller.initiate_for_farming({"from": admin, "required_confs": confs})
+    # gauge_controller.initiate_for_farming({"from": admin, "required_confs": confs})
 
     print(f"Deployment complete! Total gas used: {sum(i.gas_used for i in history)}")
     if deployments_json is not None:
