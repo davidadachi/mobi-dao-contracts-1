@@ -62,7 +62,7 @@ YEAR: constant(uint256) = 86400 * 365
 
 # Supply parameters
 INITIAL_SUPPLY: constant(uint256) = 660_000_000
-INITIAL_RATE: constant(uint256) = 274_815_283 * 10 ** 18 / YEAR  # leading to 43% premine
+INITIAL_RATE: constant(uint256) = 153_000_000 * 10 ** 18 / YEAR  # thanks
 RATE_REDUCTION_TIME: constant(uint256) = YEAR
 RATE_REDUCTION_COEFFICIENT: constant(uint256) = 18181818181818181818  # 100 / 55 = 1.818...
 RATE_DENOMINATOR: constant(uint256) = 10 ** 18
