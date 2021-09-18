@@ -124,7 +124,9 @@ def vest_tokens(admin, funding_admins, token_address, confs):
     # floats -> int, we expect to be ever so slightly over, so lets fix that
     final_total = sum(i[1] for i in vested_amounts)
 
-    if not 0 < abs(final_total - TOTAL_AMOUNT) < len(vested_amounts):
+    if not 0 <= abs(final_total - TOTAL_AMOUNT) < len(vested_amounts):
+        print(final_total)
+        print(TOTAL_AMOUNT)
         raise ValueError("Imprecision!!! Distribution amounts are too far off!")
 
     for i in range(abs(final_total - TOTAL_AMOUNT)):

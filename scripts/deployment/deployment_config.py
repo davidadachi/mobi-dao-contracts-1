@@ -9,7 +9,7 @@ from brownie import rpc, web3, accounts
 from web3 import middleware
 from web3.gas_strategies.time_based import fast_gas_price_strategy as gas_strategy
 
-LP_VESTING_JSON = "early-users-mobius.json"
+LP_VESTING_JSON = "./scripts/early-users-mobius.json"
 DEPLOYMENTS_JSON = "deployments.json"
 REQUIRED_CONFIRMATIONS = 3
 
@@ -46,7 +46,7 @@ STANDARD_ESCROWS = [
         "can_disable": False,
         "admin": "0x16E319d8dAFeF25AAcec0dF0f1E349819D36993c",  # Mobius
         "recipients": {
-            "0xf773C3F00F119985e98cfdF33BB20dcb778fe677": 10_000_000 * DECIMAL, # Alex Witt
+            "0x46943a87EB170F5Ca2608FefE4e781B0bac16bC6": 10_000_000 * DECIMAL, # Alex Witt
             "0xF2d3af8181600faa5C1BEE7398fcE1277a3B049A":  2_000_000 * DECIMAL # Moss
         },
     },
