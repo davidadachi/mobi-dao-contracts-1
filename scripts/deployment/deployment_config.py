@@ -9,7 +9,7 @@ from brownie import rpc, web3, accounts
 from web3 import middleware
 from web3.gas_strategies.time_based import fast_gas_price_strategy as gas_strategy
 
-LP_VESTING_JSON = "scripts/early-users.json"
+LP_VESTING_JSON = "./scripts/early-users-mobius.json"
 DEPLOYMENTS_JSON = "deployments.json"
 REQUIRED_CONFIRMATIONS = 3
 
@@ -23,18 +23,18 @@ DECIMAL = 10 ** 18
 # `VestingEscrow` contracts to be deployed
 STANDARD_ESCROWS = [
     {  # Founder
-        "duration": 2 * YEAR,
+        "duration": 1 * YEAR,
         "can_disable": False,
         "admin": "0x16E319d8dAFeF25AAcec0dF0f1E349819D36993c",
         "recipients": {
             "0x622d8A2DEe6aaf4f00Cc1bC9e74509ce7a18FF7D": 100_000_000 * DECIMAL, # Dahlia multisig
-            "0x4ea77424Da100ac856ece3DDfAbd8B528570Ca0d": 30_000_000 * DECIMAL, # Dylan
+            "0xB811Ad5C016c37d9f40dffA8fc360F9B3fFC0d2A": 30_000_000 * DECIMAL, # Dylan
             "0x08b6601066b441510b7546c5412e3AbB8e3a4434": 20_000_000 * DECIMAL, # 0xHuman
             "0xf617a242B862799D547044f28cC2dB3124c64817": 50_000_000 * DECIMAL, # OpenCelo multisig
         },
     },
     {  # Investors
-        "duration": 2 * YEAR,
+        "duration": 1 * YEAR,
         "can_disable": False,
         "admin": "0x16E319d8dAFeF25AAcec0dF0f1E349819D36993c",
         "recipients": {
@@ -42,11 +42,11 @@ STANDARD_ESCROWS = [
         },
     },
     {  # Advisors and partners with known addresses
-        "duration": 2 * YEAR,
+        "duration": 1 * YEAR,
         "can_disable": False,
         "admin": "0x16E319d8dAFeF25AAcec0dF0f1E349819D36993c",  # Mobius
         "recipients": {
-            "0x5314951649f0484884a067034FA57E492D908D42": 10_000_000 * DECIMAL, # Alex Witt
+            "0x46943a87EB170F5Ca2608FefE4e781B0bac16bC6": 10_000_000 * DECIMAL, # Alex Witt
             "0xF2d3af8181600faa5C1BEE7398fcE1277a3B049A":  2_000_000 * DECIMAL # Moss
         },
     },
@@ -85,7 +85,7 @@ def get_live_admin():
     # Admin and funding admin account objects used for in a live environment
     # May be created via accounts.load(name) or accounts.add(privkey)
     # https://eth-brownie.readthedocs.io/en/stable/account-management.html
-    admin = accounts.load('kyle_personal')  #
+    admin = accounts.load('dev-1')  #
     funding_admins = [admin, admin, admin, admin]
     return admin, funding_admins
 
