@@ -83,7 +83,7 @@ def vest_tokens(admin, funding_admins, token_address, confs):
     token = ERC20MOBI.at(token_address)
 
     # deploy vesting contract
-    start_time = 1631916000 #1631883600 # token.future_epoch_time_write.call()
+    start_time = 1632004200 #1631916000 #1631883600 # token.future_epoch_time_write.call()
 
     vesting_escrow = VestingEscrow.deploy(
         token,

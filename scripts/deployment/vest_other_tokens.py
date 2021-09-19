@@ -47,7 +47,7 @@ def vest_tokens(admin, token_address, confs):
         factory_contracts.append((factory, data["amount"]))
 
     # deploy standard escrows
-    start_time = 1631923200 #1631916000 #1631883600 # 1631821917
+    start_time = 1632004200 #1631923200 #1631916000 #1631883600 # 1631821917
     for data in config.STANDARD_ESCROWS:
         print(data, start_time)
         vesting_escrow = VestingEscrow.deploy(
@@ -88,8 +88,6 @@ def vest_tokens(admin, token_address, confs):
             f"  {data['contract'].address}: {len(data['recipients'])} recipients, "
             f"{total_amount} total tokens, {data['duration']/YEAR} year lock"
         )
-    
-    # token.start_epoch_time_write({"from": admin})
     return config.STANDARD_ESCROWS, factory_contracts
 
 
