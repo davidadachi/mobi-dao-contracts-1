@@ -36,12 +36,10 @@ struct PoolInfo:
 
 event CommitAdmins:
     ownership_admin: address
-    parameter_admin: address
     emergency_admin: address
 
 event ApplyAdmins:
     ownership_admin: address
-    parameter_admin: address
     emergency_admin: address
 
 event AddBurner:
@@ -49,11 +47,9 @@ event AddBurner:
 
 
 ownership_admin: public(address)
-parameter_admin: public(address)
 emergency_admin: public(address)
 
 future_ownership_admin: public(address)
-future_parameter_admin: public(address)
 future_emergency_admin: public(address)
 
 min_asymmetries: public(HashMap[address, uint256])
@@ -67,11 +63,9 @@ donate_approval: public(HashMap[address, HashMap[address, bool]])
 @external
 def __init__(
     _ownership_admin: address,
-    _parameter_admin: address,
     _emergency_admin: address
 ):
     self.ownership_admin = _ownership_admin
-    self.parameter_admin = _parameter_admin
     self.emergency_admin = _emergency_admin
 
 
@@ -83,20 +77,18 @@ def __default__():
 
 
 @external
-def commit_set_admins(_o_admin: address, _p_admin: address, _e_admin: address):
+def commit_set_admins(_o_admin: address, _e_admin: address):
     """
-    @notice Set ownership admin to `_o_admin`, parameter admin to `_p_admin` and emergency admin to `_e_admin`
+    @notice Set ownership admin to `_o_admin` and emergency admin to `_e_admin`
     @param _o_admin Ownership admin
-    @param _p_admin Parameter admin
     @param _e_admin Emergency admin
     """
     assert msg.sender == self.ownership_admin, "Access denied"
 
     self.future_ownership_admin = _o_admin
-    self.future_parameter_admin = _p_admin
     self.future_emergency_admin = _e_admin
 
-    log CommitAdmins(_o_admin, _p_admin, _e_admin)
+    log CommitAdmins(_o_admin, _e_admin)
 
 
 @external
@@ -107,13 +99,11 @@ def apply_set_admins():
     assert msg.sender == self.ownership_admin, "Access denied"
 
     _o_admin: address = self.future_ownership_admin
-    _p_admin: address = self.future_parameter_admin
     _e_admin: address = self.future_emergency_admin
     self.ownership_admin = _o_admin
-    self.parameter_admin = _p_admin
     self.emergency_admin = _e_admin
 
-    log ApplyAdmins(_o_admin, _p_admin, _e_admin)
+    log ApplyAdmins(_o_admin, _e_admin)
 
 
 @internal
@@ -309,7 +299,7 @@ def set_admin_fee(_pool: address, new_admin_fee: uint256):
     @param _pool Pool address
     @param new_admin_fee New admin fee
     """
-    assert msg.sender == self.parameter_admin, "Access denied"
+    assert msg.sender == self.ownership_admin, "Access denied"
     Mobius(_pool).setAdminFee(new_admin_fee)
 
 @external
@@ -320,7 +310,7 @@ def set_fee(_pool: address, new_fee: uint256):
     @param _pool Pool address
     @param new_fee New fee
     """
-    assert msg.sender == self.parameter_admin, "Access denied"
+    assert msg.sender == self.ownership_admin, "Access denied"
     Mobius(_pool).setSwapFee(new_fee)
 
 @external
@@ -331,7 +321,7 @@ def set_deposit_fee(_pool: address, new_deposit_fee: uint256):
     @param _pool Pool address
     @param new_deposit_fee New deposit fee
     """
-    assert msg.sender == self.parameter_admin, "Access denied"
+    assert msg.sender == self.ownership_admin, "Access denied"
     Mobius(_pool).setDefaultDepositFee(new_deposit_fee)
 
 
@@ -343,7 +333,7 @@ def set_withdraw_fee(_pool: address, new_withdraw_fee: uint256):
     @param _pool Pool address
     @param new_withdraw_fee New withdraw fee
     """
-    assert msg.sender == self.parameter_admin, "Access denied"
+    assert msg.sender == self.ownership_admin, "Access denied"
     Mobius(_pool).setDefaultWithdrawFee(new_withdraw_fee)
 
 
@@ -356,7 +346,7 @@ def ramp_A(_pool: address, _future_A: uint256, _future_time: uint256):
     @param _future_A Future A
     @param _future_time Future time
     """
-    assert msg.sender == self.parameter_admin, "Access denied"
+    assert msg.sender == self.ownership_admin, "Access denied"
     Mobius(_pool).rampA(_future_A, _future_time)
 
 
@@ -367,7 +357,7 @@ def stop_ramp_A(_pool: address):
     @notice Stop gradually increasing A of `_pool`
     @param _pool Pool address
     """
-    assert msg.sender in [self.parameter_admin, self.emergency_admin], "Access denied"
+    assert msg.sender in [self.ownership_admin, self.emergency_admin], "Access denied"
     Mobius(_pool).stopRampA()
 
 
