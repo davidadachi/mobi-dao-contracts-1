@@ -13,7 +13,7 @@ interface Mobius:
     def pause(): nonpayable
     def unpause(): nonpayable
     def transferOwnership(newOwner: address): nonpayable
-    def renonouceOwnership(): nonpayable
+    def renounceOwnership(): nonpayable
     def setAdminFee(newAdminFee: uint256): nonpayable
     def setSwapFee(newSwapFee: uint256): nonpayable
     def setDefaultDepositFee(newDepositFee: uint256): nonpayable
@@ -280,79 +280,71 @@ def set_burner_kill(_is_killed: bool):
 
 @external
 @nonreentrant('lock')
-def commit_transfer_ownership(_pool: address, new_owner: address):
+def transfer_ownership(_pool: address, new_owner: address):
     """
     @notice Transfer ownership for `_pool` pool to `new_owner` address
     @param _pool Pool which ownership is to be transferred
     @param new_owner New pool owner address
     """
     assert msg.sender == self.ownership_admin, "Access denied"
-    Mobius(_pool).commit_transfer_ownership(new_owner)
+    Mobius(_pool).transferOwnership(new_owner)
 
 
 @external
 @nonreentrant('lock')
-def apply_transfer_ownership(_pool: address):
+def renounce_ownership(_pool: address):
     """
-    @notice Apply transferring ownership of `_pool`
+    @notice Renounce ownership for `_pool`
     @param _pool Pool address
     """
-    Mobius(_pool).apply_transfer_ownership()
+    assert msg.sender == self.ownership_admin, "Access denied"
+    Mobius(_pool).renounceOwnership()
 
 
 @external
 @nonreentrant('lock')
-def accept_transfer_ownership(_pool: address):
+def set_admin_fee(_pool: address, new_admin_fee: uint256):
     """
-    @notice Apply transferring ownership of `_pool`
+    @notice Commit admin fee for `_pool` pool
     @param _pool Pool address
-    """
-    Mobius(_pool).accept_transfer_ownership()
-
-
-@external
-@nonreentrant('lock')
-def revert_transfer_ownership(_pool: address):
-    """
-    @notice Revert commited transferring ownership for `_pool`
-    @param _pool Pool address
-    """
-    assert msg.sender in [self.ownership_admin, self.emergency_admin], "Access denied"
-    Mobius(_pool).revert_transfer_ownership()
-
-
-@external
-@nonreentrant('lock')
-def revert_new_parameters(_pool: address):
-    """
-    @notice Revert comitted new parameters for `_pool` pool
-    @param _pool Pool address
-    """
-    assert msg.sender in [self.ownership_admin, self.parameter_admin, self.emergency_admin], "Access denied"
-    Mobius(_pool).revert_new_parameters()  # dev: if implemented by the pool
-
-
-@external
-@nonreentrant('lock')
-def commit_new_fee(_pool: address, new_fee: uint256, new_admin_fee: uint256):
-    """
-    @notice Commit new fees for `_pool` pool, fee: `new_fee` and admin fee: `new_admin_fee`
-    @param _pool Pool address
-    @param new_fee New fee
     @param new_admin_fee New admin fee
     """
     assert msg.sender == self.parameter_admin, "Access denied"
-    Mobius(_pool).commit_new_fee(new_fee, new_admin_fee)
+    Mobius(_pool).setAdminFee(new_admin_fee)
+
+@external
+@nonreentrant('lock')
+def set_fee(_pool: address, new_fee: uint256):
+    """
+    @notice Commit fee for `_pool` pool
+    @param _pool Pool address
+    @param new_fee New fee
+    """
+    assert msg.sender == self.parameter_admin, "Access denied"
+    Mobius(_pool).setSwapFee(new_fee)
+
+@external
+@nonreentrant('lock')
+def set_deposit_fee(_pool: address, new_deposit_fee: uint256):
+    """
+    @notice Commit deposit fee for `_pool` pool
+    @param _pool Pool address
+    @param new_deposit_fee New deposit fee
+    """
+    assert msg.sender == self.parameter_admin, "Access denied"
+    Mobius(_pool).setDefaultDepositFee(new_fee)
 
 
 @external
 @nonreentrant('lock')
-def apply_new_fee(_pool: address):
+def set_withdraw_fee(_pool: address, new_withdraw_fee: uint256):
     """
-    @notice Apply new fees for `_pool` pool
+    @notice Commit withdraw fee for `_pool` pool
     @param _pool Pool address
+    @param new_withdraw_fee New withdraw fee
     """
-    Mobius(_pool).apply_new_fee()
+    assert msg.sender == self.parameter_admin, "Access denied"
+    Mobius(_pool).setDefaultWithdrawFee(new_fee)
 
 
 @external
@@ -365,7 +357,7 @@ def ramp_A(_pool: address, _future_A: uint256, _future_time: uint256):
     @param _future_time Future time
     """
     assert msg.sender == self.parameter_admin, "Access denied"
-    Mobius(_pool).ramp_A(_future_A, _future_time)
+    Mobius(_pool).rampA(_future_A, _future_time)
 
 
 @external
@@ -376,4 +368,16 @@ def stop_ramp_A(_pool: address):
     @param _pool Pool address
     """
     assert msg.sender in [self.parameter_admin, self.emergency_admin], "Access denied"
-    Mobius(_pool).stop_ramp_A()
+    Mobius(_pool).stopRampA()
+
+
+@external
+@nonreentrant('lock')
+def set_dev_addr(_pool: address, new_dev_addr: address):
+   """
+    @notice Set dev address for `_pool` pool to `new_dev_addr` address
+    @param _pool Pool which ownership is to be transferred
+    @param new_dev_addr New pool dev address
+    """
+    assert msg.sender == self.ownership_admin, "Access denied"
+    Mobius(_pool).setDevAddress(new_dev_addr)
