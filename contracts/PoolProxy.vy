@@ -9,33 +9,21 @@ interface Burner:
     def burn(_coin: address) -> bool: payable
 
 interface Mobius:
-    def withdraw_admin_fees(): nonpayable
-    def kill_me(): nonpayable
-    def unkill_me(): nonpayable
-    def commit_transfer_ownership(new_owner: address): nonpayable
-    def apply_transfer_ownership(): nonpayable
-    def accept_transfer_ownership(): nonpayable
-    def revert_transfer_ownership(): nonpayable
-    def commit_new_parameters(amplification: uint256, new_fee: uint256, new_admin_fee: uint256): nonpayable
-    def apply_new_parameters(): nonpayable
-    def revert_new_parameters(): nonpayable
-    def commit_new_fee(new_fee: uint256, new_admin_fee: uint256): nonpayable
-    def apply_new_fee(): nonpayable
-    def ramp_A(_future_A: uint256, _future_time: uint256): nonpayable
-    def stop_ramp_A(): nonpayable
-    def set_aave_referral(referral_code: uint256): nonpayable
-    def donate_admin_fees(): nonpayable
-
-interface AddressProvider:
-    def get_registry() -> address: view
-
-interface Registry:
-    def get_decimals(_pool: address) -> uint256[8]: view
-    def get_underlying_balances(_pool: address) -> uint256[8]: view
+    def withdrawAdminFees(): nonpayable
+    def pause(): nonpayable
+    def unpause(): nonpayable
+    def transferOwnership(newOwner: address): nonpayable
+    def renonouceOwnership(): nonpayable
+    def setAdminFee(newAdminFee: uint256): nonpayable
+    def setSwapFee(newSwapFee: uint256): nonpayable
+    def setDefaultDepositFee(newDepositFee: uint256): nonpayable
+    def setDefaultWithdrawFee(newWithdrawFee: uint256): nonpayable
+    def rampA(futureA: uint256, futureTime: uint256): nonpayable
+    def stopRampA(): nonpayable
+    def setDevAddress(_devaddr: address): nonpayable
 
 
 MAX_COINS: constant(int128) = 8
-ADDRESS_PROVIDER: constant(address) = 0x0000000022D53366457F9d5E68Ec105046FC4383
 
 struct PoolInfo:
     balances: uint256[MAX_COINS]
@@ -266,7 +254,7 @@ def kill_me(_pool: address):
     @param _pool Pool address to pause
     """
     assert msg.sender == self.emergency_admin, "Access denied"
-    Mobius(_pool).kill_me()
+    Mobius(_pool).pause()
 
 
 @external
@@ -277,7 +265,7 @@ def unkill_me(_pool: address):
     @param _pool Pool address to unpause
     """
     assert msg.sender == self.emergency_admin or msg.sender == self.ownership_admin, "Access denied"
-    Mobius(_pool).unkill_me()
+    Mobius(_pool).unpause()
 
 
 @external
@@ -331,71 +319,6 @@ def revert_transfer_ownership(_pool: address):
     """
     assert msg.sender in [self.ownership_admin, self.emergency_admin], "Access denied"
     Mobius(_pool).revert_transfer_ownership()
-
-
-@external
-@nonreentrant('lock')
-def commit_new_parameters(_pool: address,
-                          amplification: uint256,
-                          new_fee: uint256,
-                          new_admin_fee: uint256,
-                          min_asymmetry: uint256):
-    """
-    @notice Commit new parameters for `_pool`, A: `amplification`, fee: `new_fee` and admin fee: `new_admin_fee`
-    @param _pool Pool address
-    @param amplification Amplification coefficient
-    @param new_fee New fee
-    @param new_admin_fee New admin fee
-    @param min_asymmetry Minimal asymmetry factor allowed.
-            Asymmetry factor is:
-            Prod(balances) / (Sum(balances) / N) ** N
-    """
-    assert msg.sender == self.parameter_admin, "Access denied"
-    self.min_asymmetries[_pool] = min_asymmetry
-    Mobius(_pool).commit_new_parameters(amplification, new_fee, new_admin_fee)  # dev: if implemented by the pool
-
-
-@external
-@nonreentrant('lock')
-def apply_new_parameters(_pool: address):
-    """
-    @notice Apply new parameters for `_pool` pool
-    @dev Only callable by an EOA
-    @param _pool Pool address
-    """
-    assert msg.sender == tx.origin
-
-    min_asymmetry: uint256 = self.min_asymmetries[_pool]
-
-    if min_asymmetry > 0:
-        registry: address = AddressProvider(ADDRESS_PROVIDER).get_registry()
-        underlying_balances: uint256[8] = Registry(registry).get_underlying_balances(_pool)
-        decimals: uint256[8] = Registry(registry).get_decimals(_pool)
-
-        balances: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
-        # asymmetry = prod(x_i) / (sum(x_i) / N) ** N =
-        # = prod( (N * x_i) / sum(x_j) )
-        S: uint256 = 0
-        N: uint256 = 0
-        for i in range(MAX_COINS):
-            x: uint256 = underlying_balances[i]
-            if x == 0:
-                N = i
-                break
-            x *= 10 ** (18 - decimals[i])
-            balances[i] = x
-            S += x
-
-        asymmetry: uint256 = N * 10 ** 18
-        for i in range(MAX_COINS):
-            x: uint256 = balances[i]
-            if x == 0:
-                break
-            asymmetry = asymmetry * x / S
-
-        assert asymmetry >= min_asymmetry, "Unsafe to apply"
-
-    Mobius(_pool).apply_new_parameters()  # dev: if implemented by the pool
 
 
 @external
@@ -454,41 +377,3 @@ def stop_ramp_A(_pool: address):
     """
     assert msg.sender in [self.parameter_admin, self.emergency_admin], "Access denied"
     Mobius(_pool).stop_ramp_A()
-
-
-@external
-@nonreentrant('lock')
-def set_aave_referral(_pool: address, referral_code: uint256):
-    """
-    @notice Set Aave referral for undelying tokens of `_pool` to `referral_code`
-    @param _pool Pool address
-    @param referral_code Aave referral code
-    """
-    assert msg.sender == self.ownership_admin, "Access denied"
-    Mobius(_pool).set_aave_referral(referral_code)  # dev: if implemented by the pool
-
-
-@external
-def set_donate_approval(_pool: address, _caller: address, _is_approved: bool):
-    """
-    @notice Set approval of `_caller` to donate admin fees for `_pool`
-    @param _pool Pool address
-    @param _caller Adddress to set approval for
-    @param _is_approved Approval status
-    """
-    assert msg.sender == self.ownership_admin, "Access denied"
-
-    self.donate_approval[_pool][_caller] = _is_approved
-
-
-@external
-@nonreentrant('lock')
-def donate_admin_fees(_pool: address):
-    """
-    @notice Donate admin fees of `_pool` pool
-    @param _pool Pool address
-    """
-    if msg.sender != self.ownership_admin:
-        assert self.donate_approval[_pool][msg.sender], "Access denied"
-
-    Mobius(_pool).donate_admin_fees()  # dev: if implemented by the pool
