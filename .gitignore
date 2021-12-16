@@ -7,4 +7,6 @@ reports/
 /scripts/deployment_keys.py
 node_modules/
 build/
+/build
+/node_modules
 
