@@ -190,7 +190,7 @@ def withdraw_admin_fees(_pool: address):
     @notice Withdraw admin fees from `_pool`
     @param _pool Pool address to withdraw admin fees from
     """
-    Mobius(_pool).withdraw_admin_fees()
+    Mobius(_pool).withdrawAdminFees()
 
 
 @external
@@ -203,7 +203,7 @@ def withdraw_many(_pools: address[20]):
     for pool in _pools:
         if pool == ZERO_ADDRESS:
             break
-        Mobius(pool).withdraw_admin_fees()
+        Mobius(pool).withdrawAdminFees()
 
 
 @external
@@ -332,7 +332,7 @@ def set_deposit_fee(_pool: address, new_deposit_fee: uint256):
     @param new_deposit_fee New deposit fee
     """
     assert msg.sender == self.parameter_admin, "Access denied"
-    Mobius(_pool).setDefaultDepositFee(new_fee)
+    Mobius(_pool).setDefaultDepositFee(new_deposit_fee)
 
 
 @external
@@ -344,7 +344,7 @@ def set_withdraw_fee(_pool: address, new_withdraw_fee: uint256):
     @param new_withdraw_fee New withdraw fee
     """
     assert msg.sender == self.parameter_admin, "Access denied"
-    Mobius(_pool).setDefaultWithdrawFee(new_fee)
+    Mobius(_pool).setDefaultWithdrawFee(new_withdraw_fee)
 
 
 @external
@@ -374,7 +374,7 @@ def stop_ramp_A(_pool: address):
 @external
 @nonreentrant('lock')
 def set_dev_addr(_pool: address, new_dev_addr: address):
-   """
+    """
     @notice Set dev address for `_pool` pool to `new_dev_addr` address
     @param _pool Pool which ownership is to be transferred
     @param new_dev_addr New pool dev address
