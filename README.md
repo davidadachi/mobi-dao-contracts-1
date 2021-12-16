@@ -1,12 +1,10 @@
 # curve-dao-contracts
 
-Vyper contracts used in the [Mobius](https://www.curve.fi/) Governance DAO.
+Vyper contracts used in the [Mobius] governance and staking system.
 
 ## Overview
 
-Mobius DAO consists of multiple smart contracts connected by [Aragon](https://github.com/aragon/aragonOS). Interaction with Aragon occurs through a [modified implementation](https://github.com/curvefi/curve-aragon-voting) of the [Aragon Voting App](https://github.com/aragon/aragon-apps/tree/master/apps/voting). Aragon's standard one token, one vote method is replaced with a weighting system based on locking tokens. Mobius DAO has a token (MOBI) which is used for both governance and value accrual.
-
-View the [documentation](https://curve.readthedocs.io/dao-overview.html) for a more in-depth explanation of how Mobius DAO works.
+Mobius DAO consists of a modified instance of Compound's Governor Brave. The Comp token is replaced with a locked voting token (veMOBI) for votes. These contracts handle the contracts for the liquid token MOBI, as well as the system of locking MOBI (veMOBI). veMOBI can then be used to direct future MOBI allocation amongst the various staking contracts, all which is handled in a decentralized manner by the token holders. 
 
 ## Testing and Development
 
@@ -49,7 +47,7 @@ See the [deployment documentation](scripts/deployment/README.md) for detailed in
 
 ## Audits and Security
 
-Mobius DAO contracts have been audited by Trail of Bits and Quantstamp. These audit reports are made available on the [Mobius website](https://dao.curve.fi/audits).
+Curve DAO contracts have been audited by Trail of Bits and Quantstamp. These audit reports are made available on the [Curve website](https://dao.curve.fi/audits).
 
 There is also an active [bug bounty](https://www.curve.fi/bugbounty) for issues which can lead to substantial loss of money, critical bugs such as a broken live-ness condition, or irreversible loss of funds.
 
@@ -57,17 +55,9 @@ There is also an active [bug bounty](https://www.curve.fi/bugbounty) for issues 
 
 You may find the following guides useful:
 
-1. [Mobius and Mobius DAO Resources](https://resources.curve.fi/)
+1. [Curve and Curve DAO Resources](https://resources.curve.fi/)
 2. [How to earn and claim MOBI](https://guides.curve.fi/how-to-earn-and-claim-crv/)
-3. [Voting and vote locking on Mobius DAO](https://guides.curve.fi/voting-and-vote-locking-curve-dao/)
-
-## Community
-
-If you have any questions about this project, or wish to engage with us:
-
-- [Telegram](https://t.me/curvefi)
-- [Twitter](https://twitter.com/curvefinance)
-- [Discord](https://discord.gg/rgrfS7W)
+3. [Voting and vote locking on Curve DAO](https://guides.curve.fi/voting-and-vote-locking-curve-dao/)
 
 ## License
 

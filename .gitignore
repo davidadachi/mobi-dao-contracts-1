@@ -5,8 +5,5 @@ __pycache__
 reports/
 /scripts/deployment_config_prod.py
 /scripts/deployment_keys.py
-node_modules/
-build/
 /build
 /node_modules
-
