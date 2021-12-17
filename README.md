@@ -4,7 +4,7 @@ Vyper contracts used in the [Mobius] governance and staking system.
 
 ## Overview
 
-Mobius DAO consists of a modified instance of Compound's Governor Brave. The Comp token is replaced with a locked voting token (veMOBI) for votes. These contracts handle the contracts for the liquid token MOBI, as well as the system of locking MOBI (veMOBI). veMOBI can then be used to direct future MOBI allocation amongst the various staking contracts, all which is handled in a decentralized manner by the token holders. 
+Mobius DAO consists of a modified instance of Compound's Governor Bravo. The Comp token is replaced with a locked voting token (veMOBI) for votes. These contracts handle the contracts for the liquid token MOBI, as well as the system of locking MOBI (veMOBI). veMOBI can then be used to direct future MOBI allocation amongst the various staking contracts, all which is handled in a decentralized manner by the token holders. 
 
 ## Testing and Development
 
