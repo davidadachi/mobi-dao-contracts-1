@@ -16,15 +16,16 @@ people = [
 
 def main():
   network.gas_limit(8000000)
-  admin = accounts.load("kyle_personal")
+  # admin = accounts.load("kyle_personal")
   # token = ERC20MOBI.at("0x17a139f275102bBaB5BcbF1c4b7143F08B635EA2")
-  voting = VotingEscrow.at("0xE9d0375cd6fC027A1a0eC39BB4c9928E5aBec27e")
-  token = ERC20MOBI.at(voting.token())
+  voting = VotingEscrow.at("0xd2Fc9ebE9602340f9917794d1B549cA3A275dd9f")
+  # token = ERC20MOBI.at(voting.token())
+  # print(token)
   # token.approve(voting.address, 2**256-1, {"from": admin})
   # voting.create_lock(6600000000000000000000000, 1765026690, {"from": admin})
   # for p in people:
-  token.transfer('0x7DFAFF53284Aac673D48EA3fA1D70844b7F62E24', 100 * 10 ** 24, {'from': admin})
-  # print(voting.balanceOfAt("0x59A6AbC89C158ef88d5872CaB4aC3B08474883D9", 10369880))
+  # token.transfer('0x7DFAFF53284Aac673D48EA3fA1D70844b7F62E24', 100 * 10 ** 24, {'from': admin})
+  print(voting.balanceOfAt("0x59A6AbC89C158ef88d5872CaB4aC3B08474883D9", 10606724))
   # print(token.balanceOf("0x59A6AbC89C158ef88d5872CaB4aC3B08474883D9"))
   # print(voting.token())
     
