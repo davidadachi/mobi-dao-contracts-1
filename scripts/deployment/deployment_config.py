@@ -85,7 +85,7 @@ def get_live_admin():
     # Admin and funding admin account objects used for in a live environment
     # May be created via accounts.load(name) or accounts.add(privkey)
     # https://eth-brownie.readthedocs.io/en/stable/account-management.html
-    admin = accounts.load('dev-1')  #
+    admin = accounts.load('kyle_personal')  #
     funding_admins = [admin, admin, admin, admin]
     return admin, funding_admins
 
