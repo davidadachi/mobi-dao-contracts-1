@@ -206,12 +206,7 @@ def burn(_coin: address):
     """
     assert tx.origin == msg.sender
     assert not self.burner_kill
-
-    _value: uint256 = 0
-    if _coin == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE:
-        _value = self.balance
-
-    Burner(self.burners[_coin]).burn(_coin, value=_value)  # dev: should implement burn()
+    Burner(self.burners[_coin]).burn(_coin)  # dev: should implement burn()
 
 
 @external
