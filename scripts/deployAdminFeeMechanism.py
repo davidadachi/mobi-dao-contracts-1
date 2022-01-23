@@ -15,30 +15,25 @@ network.gas_limit(8000000)
 
 MOBIUS_BASE_BURNER = '0x1cD9fd825Df14E6A03DE9259427ae106353e9995'
 
-POOL_PROXY_OWNER = '0x6c0d6Fba3bcdb224278474E8d524F19c6BB55850'
-POOL_EMERGENCY_OWNER = '0x6c0d6Fba3bcdb224278474E8d524F19c6BB55850'
+TIMELOCK = '0x7d9Af9dF33D6CAB895B4cF3422D790cbE98B48c8'
+MULTI_SIG = '0x16E319d8dAFeF25AAcec0dF0f1E349819D36993c'
 
-VEMOBI_ADDRESS = '0x536CBB53a8b8dCcbC4406b063E7B7CaD05861fa5'
+POOL_PROXY_OWNER = TIMELOCK
+POOL_EMERGENCY_OWNER = MULTI_SIG
+
+VEMOBI_ADDRESS = '0xd813a846aa9d572140d7abbb4efac8cd786b4c0e'
 FEE_TOKEN = '0x73a210637f6F6B7005512677Ba6B3C96bb4AA44B'
 
-FEE_ADMIN = '0x6c0d6Fba3bcdb224278474E8d524F19c6BB55850'
-EMERGENCY_RETURN = '0x6c0d6Fba3bcdb224278474E8d524F19c6BB55850'
+FEE_ADMIN = MULTI_SIG
+EMERGENCY_RETURN = TIMELOCK
 
 START_TIME = 1642811506
 
 def main():
-    numTokens = len(REWARDS_TOKENS_ADDR)
-    if numTokens > 8:
-        print("Too many tokens! Aborting")
-        return
-    if numTokens == 0:
-        print("No rewards tokens specified, aborting")
-        return
     admin = accounts.load('dev-1')
-    externalRewards = REWARDS_TOKENS_ADDR + [ZERO_ADDRESS] * (8 - numTokens)
-    for (GAUGE_ADDRESS, STAKING_ADDRESS) in zip(GAUGE_ADDRESSES, STAKING_ADDRESSES):
-        gauge = LiquidityGaugeV3.at(GAUGE_ADDRESS)
-        gauge.set_rewards(STAKING_ADDRESS, FUNC_SIGNATURES, externalRewards, {'from': admin})
+    auth = {'from': admin}
+    distributor = FeeDistributor.deploy(VEMOBI_ADDRESS, START_TIME, FEE_TOKEN, FEE_ADMIN, EMERGENCY_RETURN, auth)
+
 
 def test_deploy():
     MOBIUS_BASE_BURNER = '0x1cD9fd825Df14E6A03DE9259427ae106353e9995'
