@@ -14,6 +14,7 @@ WEEK: constant(uint256) = 604800
 WEIGHT_VOTE_DELAY: constant(uint256) = 10 * 86400
 
 
+
 struct Point:
     bias: uint256
     slope: uint256
